@@ -1,7 +1,7 @@
 import socket
 import errno
-import sys
 import threading
+import os
 
 HEADER_LENGTH = 10
 
@@ -41,10 +41,9 @@ def recieve_message():
 
                 # If we received no data, server gracefully closed a connection, for example using
                 # socket.close() or socket.shutdown(socket.SHUT_RDWR)
-                # Now program still waiting for user input so you have to enter 'quit' to come out from the program
                 if not len(username_header):
                     print('Connection closed by the server')
-                    sys.exit()
+                    os._exit(0)
 
                 # Convert header to int value
                 username_length = int(username_header.decode().strip())
@@ -71,7 +70,7 @@ def recieve_message():
                 # then something happened
                 if e.errno != errno.EAGAIN and e.errno != errno.EWOULDBLOCK:
                     print('Reading error: {}'.format(str(e)))
-                    sys.exit()
+                    os._exit(0)
 
                 # We just did not receive anything
                 # continue
@@ -79,7 +78,7 @@ def recieve_message():
             except Exception as e:
                 # Any other exception - something happened, exit
                 print('Reading error: '.format(str(e)))
-                sys.exit()
+                os._exit(0)
                 
             except:
 
@@ -97,15 +96,14 @@ def send_message():
         # Wait for user to input a message
         send_message = input('type here...> ')
         
-        # if we enter 'quit' here then it will not take input anymore but the program wait for recieve function
-        # if you still want to quit then either you have to wait for server closed the socket or you have to intrrupt uisng ctrl+c
+        # if we enter 'quit' here then it will exit the program and closed the connection
         if send_message == "quit":
             # Encode message to bytes, prepare header and convert to bytes, like for username above,
             # then send
             send_message = send_message.encode()
             send_message_header = f"{len(send_message):<{HEADER_LENGTH}}".encode()
             client_socket.send(send_message_header + send_message)
-            sys.exit()
+            os._exit(0)
 
         # If message is not empty - send it
         elif send_message:
