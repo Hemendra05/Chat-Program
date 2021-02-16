@@ -26,7 +26,7 @@ client_socket.setblocking(False)
 # We need to encode username to bytes, then count number of bytes and prepare header of fixed size,
 # that we encode to bytes as well
 username = my_username.encode()
-username_header = f"{len(username):<{HEADER_LENGTH}}".encode()
+username_header = f"{len(username):<{HEADER_LENGTH}}".encode('utf-8')
 client_socket.send(username_header + username)
 
 # Create a function to handle the recieving messages
@@ -46,16 +46,16 @@ def recieve_message():
                     os._exit(0)
 
                 # Convert header to int value
-                username_length = int(username_header.decode().strip())
+                username_length = int(username_header.decode('utf-8').strip())
 
                 # Receive and decode username
-                username = client_socket.recv(username_length).decode()
+                username = client_socket.recv(username_length).decode('utf-8')
 
                 # Now do the same for message (as we received username, we received whole message,
                 # there's no need to check if it has any length)
                 message_header = client_socket.recv(HEADER_LENGTH)
-                message_length = int(message_header.decode().strip())
-                message = client_socket.recv(message_length).decode()
+                message_length = int(message_header.decode('utf-8').strip())
+                message = client_socket.recv(message_length).decode('utf-8')
                 
 
                 # Print message
@@ -100,8 +100,8 @@ def send_message():
         if send_message == "quit":
             # Encode message to bytes, prepare header and convert to bytes, like for username above,
             # then send
-            send_message = send_message.encode()
-            send_message_header = f"{len(send_message):<{HEADER_LENGTH}}".encode()
+            send_message = send_message.encode('utf-8')
+            send_message_header = f"{len(send_message):<{HEADER_LENGTH}}".encode('utf-8')
             client_socket.send(send_message_header + send_message)
             os._exit(0)
 
@@ -110,8 +110,8 @@ def send_message():
 
             # Encode message to bytes, prepare header and convert to bytes, like for username above,
             # then send
-            send_message = send_message.encode()
-            send_message_header = f"{len(send_message):<{HEADER_LENGTH}}".encode()
+            send_message = send_message.encode('utf-8')
+            send_message_header = f"{len(send_message):<{HEADER_LENGTH}}".encode('utf-8')
             client_socket.send(send_message_header + send_message)  
 
         

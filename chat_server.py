@@ -48,7 +48,7 @@ def receive_message(client_socket):
             return False
 
         # Convert header to int value
-        message_length = int(message_header.decode().strip())
+        message_length = int(message_header.decode('utf-8').strip())
 
         # Return an object of message header and message data
         return {'header': message_header, 'data': client_socket.recv(message_length)}
@@ -78,8 +78,8 @@ def socket():
                 message = receive_message(notified_socket)
 
                 # If False, client disconnected, cleanup
-                if message is False or message['data'].decode() == "quit":
-                    print('Closed connection from: {}'.format(clients[notified_socket]['data'].decode()))
+                if message is False or message['data'].decode('utf-8') == "quit":
+                    print('Closed connection from: {}'.format(clients[notified_socket]['data'].decode('utf-8')))
                     
                     # Remove from list for socket.socket()
                     sockets_list.remove(notified_socket)
@@ -92,7 +92,7 @@ def socket():
                 # Get user by notified socket, so we will know who sent the message
                 user = clients[notified_socket]
 
-                print(f"Received message from {user['data'].decode()}: {message['data'].decode()}")
+                print(f"Received message from {user['data'].decode('utf-8')}: {message['data'].decode('utf-8')}")
                 
 
                 # Iterate over connected clients and broadcast message
@@ -158,7 +158,7 @@ while True:
                 # Also save username and username header
                 clients[client_socket] = user
 
-                print('Accepted new connection from {}:{}, username: {}'.format(*client_address, user['data'].decode()))
+                print('Accepted new connection from {}:{}, username: {}'.format(*client_address, user['data'].decode('utf-8')))
                 
             # Creating Threads for the fucntion so that function can connect multiple client at a time : multi-threading
             socket_threads = threading.Thread(target=socket)
