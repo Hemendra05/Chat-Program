@@ -94,7 +94,7 @@ def send_message():
     while True:
 
         # Wait for user to input a message
-        send_message = input('type here...> ')
+        send_message = input()
         
         # if we enter 'quit' here then it will exit the program and closed the connection
         if send_message == "quit":
